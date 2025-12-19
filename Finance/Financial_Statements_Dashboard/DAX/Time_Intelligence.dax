@@ -1,0 +1,48 @@
+/* =====================================================
+   Cash Flow – Previous Month Balance
+   ===================================================== */
+
+CFS PreviousMonthBal :=
+VAR SelDate =
+    MAX ( 'Date'[Date] )
+
+VAR PrevMonthEnd =
+    EOMONTH ( SelDate, -1 )
+
+RETURN
+CALCULATE (
+    [BS As of Date],
+    USERELATIONSHIP (
+        'account move line'[account_code_key],
+        mapping_cfs_updated[account_code_key]
+    ),
+    FILTER (
+        ALL ( 'Date' ),
+        'Date'[Date] = PrevMonthEnd
+    )
+)
+
+
+/* =====================================================
+   Cash Flow – Current Month Balance
+   ===================================================== */
+
+CFS CurrentMonthBal :=
+VAR SelDate =
+    MAX ( 'Date'[Date] )
+
+VAR MonthEnd =
+    EOMONTH ( SelDate, 0 )
+
+RETURN
+CALCULATE (
+    [BS As of Date],
+    USERELATIONSHIP (
+        'account move line'[account_code_key],
+        mapping_cfs_updated[account_code_key]
+    ),
+    FILTER (
+        ALL ( 'Date' ),
+        'Date'[Date] = MonthEnd
+    )
+)
