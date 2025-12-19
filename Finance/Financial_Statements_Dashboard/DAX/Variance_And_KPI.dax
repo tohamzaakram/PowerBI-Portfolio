@@ -1,0 +1,37 @@
+/* =====================================================
+   Cost of Sales – Percentage Change (YoY)
+   ===================================================== */
+
+COS % Change :=
+VAR CY =
+    [COGS]
+
+VAR PY =
+    CALCULATE (
+        [COGS],
+        SAMEPERIODLASTYEAR ( 'Date'[Date] )
+    )
+
+RETURN
+DIVIDE (
+    CY - PY,
+    PY
+)
+
+
+/* =====================================================
+   Base Period Value (Dynamic Comparison Selector)
+   ===================================================== */
+
+Base Period Value :=
+VAR Comparison =
+    SELECTEDVALUE ( ComparisonType[ComparisonType] )
+
+RETURN
+SWITCH (
+    Comparison,
+    "CM vs LM",      [CM (Base)],
+    "YTD vs YTD LY", [YTD (Base)],
+    "CM vs CM LY",   [CM (Base)],
+    BLANK ()
+)
