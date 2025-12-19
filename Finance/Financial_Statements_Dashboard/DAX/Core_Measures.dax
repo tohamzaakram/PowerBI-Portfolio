@@ -1,0 +1,31 @@
+/* =====================================================
+   Core Reporting Amount
+   ===================================================== */
+
+Amount (Reporting) :=
+VAR Cur = [Selected Currency (Final)]
+RETURN
+SWITCH(
+    Cur,
+    "USD", SUM('account move line'[Amount_USD]),
+    "SAR", SUM('account move line'[Amount_Signed]),
+    "AED", SUM('account move line'[Amount_Signed]),
+    SUM('account move line'[Amount_USD])
+)
+
+/* =====================================================
+   Balance Sheet – As Of Date
+   ===================================================== */
+
+BS As of Date :=
+CALCULATE(
+    [Amount (Reporting)],
+    DATESBETWEEN(
+        'Date'[Date],
+        DATE(1900,1,1),
+        MAX('Date'[Date])
+    ),
+    KEEPFILTERS(
+        mapping_all[Financial Statements] = "Balance Sheet"
+    )
+)
