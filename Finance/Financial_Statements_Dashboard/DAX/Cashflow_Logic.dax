@@ -1,0 +1,82 @@
+/* =====================================================
+   Cash Summary (Cash Flow Structure Logic)
+   ===================================================== */
+
+Cash Summary :=
+VAR Code =
+    SELECTEDVALUE ( 'Cash Table'[Code] )
+
+-- Leaf-level measures
+VAR TotalChange =
+    [Total change in cash]
+
+VAR Opening =
+    [Add: Opening cash]
+
+VAR Other =
+    [Other Cash Arrangement]
+
+-- Subtotal calculation (used when Code is BLANK)
+VAR Subtotal =
+    SUMX (
+        VALUES ( 'Cash Table'[Code] ),
+        SWITCH (
+            'Cash Table'[Code],
+            "TCC", TotalChange,
+            "AOC", Opening,
+            "OCA", Other,
+            BLANK ()
+        )
+    )
+
+RETURN
+SWITCH (
+    TRUE (),
+
+    -- Leaf nodes
+    Code = "TCC", TotalChange,
+    Code = "AOC", Opening,
+    Code = "OCA", Other,
+
+    -- Subtotal / Total nodes
+    ISBLANK ( Code ), Subtotal,
+
+    BLANK ()
+)
+
+
+/* =====================================================
+   Cash Flow Statement – Dynamic Movement Row
+   ===================================================== */
+
+CFS Movement Row :=
+VAR Nature =
+    UPPER (
+        TRIM (
+            SELECTEDVALUE ( mapping_cfs_updated[Nature] )
+        )
+    )
+
+VAR MClass =
+    UPPER (
+        TRIM (
+            SELECTEDVALUE ( mapping_cfs_updated[M-Classification] )
+        )
+    )
+
+RETURN
+SWITCH (
+    TRUE (),
+
+    -- Independent measures
+    MClass = "DEPEX",     [CFS Depreciation],
+    MClass = "FAT",       [CFS Movement FAT],
+    MClass = "NETPROFIT", [Net profit Basic],
+
+    -- Movement-based measures
+    Nature = "ASSETS",       [CFS Movement Assets],
+    Nature = "LIABILITIES",  [CFS Movement Liabilities],
+    Nature = "EQUITY",       [CFS Movement Equity],
+
+    BLANK ()
+)
