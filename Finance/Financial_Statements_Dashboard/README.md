@@ -36,3 +36,11 @@ It is designed for monthly and yearly reviews, variance analysis, and executive 
 - Data modeling best practices
 ## Dashboard Preview
 Screenshots below illustrate the dashboard structure and insights.
+## Dashboard Summary
+![Dashboard Summary](Dashboard_Summary.png)
+
+## Detailed Financial Statements
+![Dashboard Details](Dashboard_Details.png)
+
+## Data Model
+![Data Model](Data_Model.png)
